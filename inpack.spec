@@ -1,23 +1,24 @@
-project.name = nginx
-project.version = 1.12.0
-project.vendor = nginx.org
-project.homepage = http://nginx.org/
-project.groups = dev/sys-srv
-project.description = High Performance Load Balancer, Web Server, &amp; Reverse Proxy
+[project]
+name = nginx
+version = 1.12.2
+vendor = nginx.org
+homepage = http://nginx.org/
+groups = dev/sys-srv
+description = High Performance Load Balancer, Web Server, &amp; Reverse Proxy
 
 %build
 
 PREFIX="{{.project__prefix}}"
 
-cd {{.lospack__pack_dir}}/deps
+cd {{.inpack__pack_dir}}/deps
 
-if [ ! -f "nginx-1.12.0.tar.gz" ]; then
-    wget http://nginx.org/download/nginx-1.12.0.tar.gz
+if [ ! -f "nginx-{{.project__version}}.tar.gz" ]; then
+    wget http://nginx.org/download/nginx-{{.project__version}}.tar.gz
 fi
-if [ -d "nginx-1.12.0" ]; then
-    rm -rf nginx-1.12.0
+if [ -d "nginx-{{.project__version}}" ]; then
+    rm -rf nginx-{{.project__version}}
 fi
-tar -zxf nginx-1.12.0.tar.gz
+tar -zxf nginx-{{.project__version}}.tar.gz
 
 
 if [ ! -f "openssl-1.0.2k.tar.gz" ]; then
@@ -29,7 +30,7 @@ fi
 tar -zxf openssl-1.0.2k.tar.gz
 
 
-cd nginx-1.12.0
+cd nginx-{{.project__version}}
 ./configure \
     --user=action \
     --group=action \
@@ -87,7 +88,7 @@ mkdir -p {{.buildroot}}/conf/conf.d/
 mkdir -p {{.buildroot}}/modules
 mkdir -p {{.buildroot}}/var/cache/{client_temp,proxy_temp,fastcgi_temp,uwsgi_temp,scgi_temp}
 
-cd {{.lospack__pack_dir}}
+cd {{.inpack__pack_dir}}
 
 install misc/nginx.conf.tpl             {{.buildroot}}/conf/nginx.conf
 
@@ -95,8 +96,8 @@ sed -i 's/{\[worker_processes\]}/1/g'             {{.buildroot}}/conf/nginx.conf
 sed -i 's/{\[events_worker_connections\]}/8192/g' {{.buildroot}}/conf/nginx.conf
 sed -i 's/{\[http_server_default_listen\]}/80/g'  {{.buildroot}}/conf/nginx.conf
 
-cd {{.lospack__pack_dir}}/deps
-rm -rf nginx-1.12.0
+cd {{.inpack__pack_dir}}/deps
+rm -rf nginx-{{.project__version}}
 rm -rf openssl-1.0.2k
 
 %files
