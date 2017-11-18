@@ -86,7 +86,7 @@ rm -f    {{.buildroot}}/bin/nginx.old
 
 mkdir -p {{.buildroot}}/conf/conf.d/
 mkdir -p {{.buildroot}}/modules
-mkdir -p {{.buildroot}}/var/cache/{client_temp,proxy_temp,fastcgi_temp,uwsgi_temp,scgi_temp}
+mkdir -p {{.buildroot}}/var/cache/nginx/{client_temp,proxy_temp,fastcgi_temp,uwsgi_temp,scgi_temp}
 
 cd {{.inpack__pack_dir}}
 
