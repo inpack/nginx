@@ -21,15 +21,6 @@ fi
 tar -zxf nginx-{{.project__version}}.tar.gz
 
 
-if [ ! -f "openssl-1.0.2k.tar.gz" ]; then
-    wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz
-fi
-if [ -d "openssl-1.0.2k" ]; then
-    rm -rf openssl-1.0.2k
-fi
-tar -zxf openssl-1.0.2k.tar.gz
-
-
 cd nginx-{{.project__version}}
 ./configure \
     --user=action \
@@ -70,8 +61,7 @@ cd nginx-{{.project__version}}
     --with-stream \
     --with-stream_realip_module \
     --with-stream_ssl_module \
-    --with-stream_ssl_preread_module \
-    --with-openssl=../openssl-1.0.2k
+    --with-stream_ssl_preread_module
 
 make -j2
 
@@ -79,8 +69,11 @@ des_tmp=/tmp/nginx_build_tmp
 mkdir -p $des_tmp
 make install DESTDIR=$des_tmp
 
+
 rm -rf   {{.buildroot}}/*
 cp -rp   $des_tmp/$PREFIX/* {{.buildroot}}/
+
+strip -s {{.buildroot}}/bin/nginx
 
 rm -f    {{.buildroot}}/bin/nginx.old
 
@@ -98,7 +91,6 @@ sed -i 's/{\[http_server_default_listen\]}/80/g'  {{.buildroot}}/conf/nginx.conf
 
 cd {{.inpack__pack_dir}}/deps
 rm -rf nginx-{{.project__version}}
-rm -rf openssl-1.0.2k
 
 %files
 
