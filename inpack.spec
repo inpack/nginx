@@ -1,6 +1,6 @@
 [project]
 name = nginx
-version = 1.12.2
+version = 1.14.2
 vendor = nginx.org
 homepage = http://nginx.org/
 groups = dev/sys-srv
@@ -8,7 +8,7 @@ description = High Performance Load Balancer, Web Server, &amp; Reverse Proxy
 
 %build
 
-PREFIX="{{.project__prefix}}"
+PREFIX="/opt/nginx/nginx"
 
 cd {{.inpack__pack_dir}}/deps
 
