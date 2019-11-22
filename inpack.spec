@@ -1,6 +1,6 @@
 [project]
 name = nginx
-version = 1.14.2
+version = 1.16.1
 vendor = nginx.org
 homepage = http://nginx.org/
 groups = dev/sys-srv
