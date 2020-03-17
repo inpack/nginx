@@ -1,26 +1,23 @@
 [project]
-name = nginx
-version = 1.16.1
-vendor = nginx.org
-homepage = http://nginx.org/
-groups = dev/sys-srv
-description = High Performance Load Balancer, Web Server, &amp; Reverse Proxy
+name = "nginx"
+version = "1.16.1"
+vendor = "nginx.org"
+homepage = "http://nginx.org/"
+description = "High Performance Load Balancer, Web Server, &amp; Reverse Proxy"
+groups = ["dev/sys-srv"]
 
-%build
+[files]
 
-PREFIX="/opt/nginx/nginx"
-
+[scripts]
+build = """PREFIX=\"/opt/nginx/nginx\"
 cd {{.inpack__pack_dir}}/deps
-
-if [ ! -f "nginx-{{.project__version}}.tar.gz" ]; then
+if [ ! -f \"nginx-{{.project__version}}.tar.gz\" ]; then
     wget http://nginx.org/download/nginx-{{.project__version}}.tar.gz
 fi
-if [ -d "nginx-{{.project__version}}" ]; then
+if [ -d \"nginx-{{.project__version}}\" ]; then
     rm -rf nginx-{{.project__version}}
 fi
 tar -zxf nginx-{{.project__version}}.tar.gz
-
-
 cd nginx-{{.project__version}}
 ./configure \
     --user=action \
@@ -62,35 +59,22 @@ cd nginx-{{.project__version}}
     --with-stream_realip_module \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module
-
 make -j2
-
 des_tmp=/tmp/nginx_build_tmp
 mkdir -p $des_tmp
 make install DESTDIR=$des_tmp
-
-
 rm -rf   {{.buildroot}}/*
 cp -rp   $des_tmp/$PREFIX/* {{.buildroot}}/
-
 strip -s {{.buildroot}}/bin/nginx
-
 rm -f    {{.buildroot}}/bin/nginx.old
-
 mkdir -p {{.buildroot}}/conf/conf.d/
 mkdir -p {{.buildroot}}/modules
 mkdir -p {{.buildroot}}/var/cache/nginx/{client_temp,proxy_temp,fastcgi_temp,uwsgi_temp,scgi_temp}
-
 cd {{.inpack__pack_dir}}
-
 install misc/nginx.conf.tpl             {{.buildroot}}/conf/nginx.conf
-
-sed -i 's/{\[worker_processes\]}/1/g'             {{.buildroot}}/conf/nginx.conf
-sed -i 's/{\[events_worker_connections\]}/8192/g' {{.buildroot}}/conf/nginx.conf
-sed -i 's/{\[http_server_default_listen\]}/80/g'  {{.buildroot}}/conf/nginx.conf
-
+sed -i 's/{[worker_processes]}/1/g'             {{.buildroot}}/conf/nginx.conf
+sed -i 's/{[events_worker_connections]}/8192/g' {{.buildroot}}/conf/nginx.conf
+sed -i 's/{[http_server_default_listen]}/80/g'  {{.buildroot}}/conf/nginx.conf
 cd {{.inpack__pack_dir}}/deps
 rm -rf nginx-{{.project__version}}
-
-%files
-
+"""
