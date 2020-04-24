@@ -1,6 +1,6 @@
 [project]
 name = "nginx"
-version = "1.16.1"
+version = "1.18"
 vendor = "nginx.org"
 homepage = "http://nginx.org/"
 description = "High Performance Load Balancer, Web Server, &amp; Reverse Proxy"
@@ -72,9 +72,9 @@ mkdir -p {{.buildroot}}/modules
 mkdir -p {{.buildroot}}/var/cache/nginx/{client_temp,proxy_temp,fastcgi_temp,uwsgi_temp,scgi_temp}
 cd {{.inpack__pack_dir}}
 install misc/nginx.conf.tpl             {{.buildroot}}/conf/nginx.conf
-sed -i 's/{[worker_processes]}/1/g'             {{.buildroot}}/conf/nginx.conf
-sed -i 's/{[events_worker_connections]}/8192/g' {{.buildroot}}/conf/nginx.conf
-sed -i 's/{[http_server_default_listen]}/80/g'  {{.buildroot}}/conf/nginx.conf
+sed -i 's/{\\[worker_processes\\]}/1/g'             {{.buildroot}}/conf/nginx.conf
+sed -i 's/{\\[events_worker_connections\\]}/8192/g' {{.buildroot}}/conf/nginx.conf
+sed -i 's/{\\[http_server_default_listen\\]}/80/g'  {{.buildroot}}/conf/nginx.conf
 cd {{.inpack__pack_dir}}/deps
 rm -rf nginx-{{.project__version}}
 """
