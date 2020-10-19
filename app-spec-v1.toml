@@ -1,0 +1,59 @@
+kind = "AppSpec"
+roles = [100, 101]
+type_tags = ["network"]
+
+[meta]
+  id = "sysinner-nginx"
+  name = "Nginx Web 服务器"
+  version = "1.0"
+  subtiel = "高性能 http/tcp/udp/grpc 代理服务器"
+
+[[packages]]
+  name = "nginx"
+  version = "1.18"
+
+[[packages]]
+  name = "nginx-keeper"
+  version = "0.9"
+
+[[executors]]
+  name = "nginx-main"
+  exec_start = """
+NAME=nginx
+
+if pidof $NAME; then
+  exit 0
+fi
+
+if [ ! -d "/opt/nginx/nginx" ]; then
+  mkdir -p /opt/nginx/nginx
+fi
+rsync -av {{.inpack_prefix_nginx}}/* /opt/nginx/nginx/
+
+{{.inpack_prefix_nginx_keeper}}/bin/nginx-init start
+"""
+
+  exec_stop = "{{.inpack_prefix_nginx_keeper}}/bin/nginx-init stop"
+  priority = 4
+
+  [executors.plan]
+    on_tick = 60
+
+[[service_ports]]
+  name = "http"
+  box_port = 8080
+
+[exp_res]
+  cpu_min = 1
+  mem_min = 64
+  vol_min = 1
+
+[exp_deploy]
+  rep_min = 1
+  rep_max = 128
+  sys_state = 1
+
+[[urls]]
+  name = "gdoc"
+  url = "https://www.sysinner.cn/gdoc/view/app-guide/nginx/v1.md"
+
